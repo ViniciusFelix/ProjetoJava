@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/default.xhtml">
+	<ui:define name="head">
+	</ui:define>
+	<ui:define name="content">
+		<f:view>
+			<h:form>  
+				<p:panel visible="true" closable="false" toggleable="false" header="Lista de correição/inspeção">
+		  		    <p:dataTable id="dataTable" var="inspecao" value="#{inspecaoBean.all}" widgetVar="inspecaoTable"
+				            emptyMessage="Nenhuma inspeção ou correição encontrada com os critérios pesquisados"
+				            paginator="true" rows="10"
+							paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,15,30">
+				              
+				        <f:facet name="header">  
+				            <p:outputPanel style="text-align: right">  
+				                <p:inputText id="globalFilter" onkeyup="PF('inspecaoTable').filter()" size="95"/>
+				                <p:watermark for="globalFilter" value="Pesquisa geral" />   
+				            </p:outputPanel>  
+				        </f:facet>
+				        
+				        <p:column id="tipoInspecao" headerText="Tipo" filterBy="#{inspecao.tipoInspecao}"
+			                filterMatchMode="exact" 
+			                filterOptions="#{inspecaoBean.tiposDeInspecao}" >  
+			            <h:outputText value="#{inspecaoBean.nomeTipoInspecao(inspecao.tipoInspecao)}" />   
+			        	</p:column>
+				        
+				        <p:column id="numInspecao" headerText="Número" filterBy="#{inspecao.numInspecao}/#{inspecao.numAnoInspecao}"     
+			                filterMatchMode="contains">  
+			            <h:outputText value="#{inspecao.numInspecao}/#{inspecao.numAnoInspecao}" />  
+			            <p:watermark for="numInspecao" value="número" />
+			        	</p:column>
+			        	
+			        	<p:column id="numPortaria" headerText="Portaria" filterBy="#{inspecao.numPortaria}"     
+			                filterMatchMode="contains">  
+			            <h:outputText value="#{inspecao.numPortaria}" />
+			            <p:watermark for="numPortaria" value="nº portaria" />  
+			        	</p:column>
+			        	
+			        	<p:column id="tribunal" headerText="Tribunal/Estado" 
+			        		filterBy="#{(inspecao.orgaos.size() != 0) ? ((inspecao.orgaos.get(0).orgao != null) ? inspecaoBean.selecionaTribunal(inspecao.orgaos.get(0).orgao) : inspecao.orgaos.get(0).cartorio.cidade.uf) : ''}" 
+			        		style="width:20%"   
+			                filterMatchMode="contains">  
+			            <h:outputText value="#{(inspecao.orgaos.size() != 0) ? ((inspecao.orgaos.get(0).orgao != null) ? inspecaoBean.selecionaTribunal(inspecao.orgaos.get(0).orgao) : inspecao.orgaos.get(0).cartorio.cidade.uf) : ''}" /> 
+			            <p:watermark for="tribunal" value="tribunal" />    
+			        	</p:column>
+			        	
+			        	<p:column id="dscAssunto" headerText="Assunto" filterBy="#{inspecao.dscAssunto}"  style="display:none;"  
+			                filterMatchMode="contains">  
+			            <h:outputText value="#{inspecao.dscAssunto}" />
+			            <p:watermark for="dscAssunto" value="palavra chave" />    
+			        	</p:column>
+			        	
+			        	<p:column style="width:12%; horizontal-align:right" >
+							<f:facet name="header">
+								<h:outputText value="Ação" />
+							</f:facet>
+							
+							<h:commandLink rendered="#{inspecao.flgInspecaoPublicada == '0'.charAt(0)}"
+								action="#{inspecaoBean.redirecionarPaginaAlterar}">
+								<f:setPropertyActionListener
+									target="#{inspecaoBean.inspecao}"
+									value="#{inspecao}" />
+								<h:graphicImage value="/images/icone_editar.png" width="25px" height="25px" title="Abrir inspecao" alt="Abrir inspeçao"/>
+							</h:commandLink>
+							
+
+							<h:commandLink rendered="#{inspecao.flgInspecaoPublicada == '1'.charAt(0)}"
+								action="#{inspecaoBean.redirecionarPaginaVisualizar}">
+								<f:setPropertyActionListener
+									target="#{inspecaoBean.inspecao}"
+									value="#{inspecao}" />
+								<h:graphicImage value="/images/edit-find.png" width="25px" height="25px" title="Visualizar inspeção" alt="Visualizar inspeçao"/>
+							</h:commandLink>
+							
+
+							<p:commandLink onclick="PF('confirmation#{inspecao.id}').show()">
+								<h:graphicImage value="/images/icone_excluir.png" width="20px" height="20px" title="Excluir inspecao" alt="Excluir inspeçao"/>
+							</p:commandLink>
+							<p:confirmDialog
+								message="Deseja realmente excluir este registro?"
+								header="Excluir registro" severity="alert"
+								widgetVar="confirmation#{inspecao.id}">
+		
+								<p:commandButton
+									action="#{inspecaoBean.excluirInspecao}"
+									value="Sim">
+									<f:setPropertyActionListener
+										target="#{inspecaoBean.inspecao}"
+										value="#{inspecao}" />
+								</p:commandButton>
+		
+								<p:commandButton value="Não"
+									onclick="PF('confirmation#{inspecao.id}').hide()"
+									type="button" />
+							</p:confirmDialog>
+						</p:column>
+				    </p:dataTable> 
+				</p:panel> 
+			    <br />
+			    <div align="center">
+					<p:commandButton value="Nova inspeção" action="#{inspecaoBean.redirecionarPaginaCadastro}" icon="ui-icon-plus" />
+
+				</div>
+			</h:form>  
+		</f:view>
+	</ui:define>
+</ui:composition>

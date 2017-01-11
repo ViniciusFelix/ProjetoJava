@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/default.xhtml">
+	<ui:define name="head">
+	<script>
+		function verificaRemeterTribunal(){
+			
+			var valorCampoHidden = document.getElementById("campoVerifica").value;
+			var podeMandar = false;
+			
+			if(valorCampoHidden == 0){
+				podeMandar = true;
+			} else {
+				return true;
+			}
+			
+			var quantMarcados =	$(".ui-state-active.ui-chkbox-box").length;
+
+
+			if(quantMarcados > 0){
+				podeMandar = true;
+			} else {
+				return true;
+			}
+			
+			if(podeMandar){
+					PF('DlgformDialogEmail').show();
+					return false;
+				}
+			}
+	</script>
+	</ui:define>
+	<ui:define name="content">
+		<f:view>
+			<h:form prependId="false" id="form">
+				<p:panel visible="true" closable="false" toggleable="false" header="Editar Ata">
+					<h:outputText value="(#{(respostaBean.orgao != null) ? respostaBean.orgao.orgao : respostaBean.cartorio.cidade}) #{(respostaBean.orgao != null) ? respostaBean.orgao : respostaBean.cartorio}" var="unidade" />  
+				</p:panel>
+				
+				<br />
+				
+				            <h:inputHidden value="#{respostaBean.verificaAlgumMarcado}" id="campoVerifica" />
+				<p:dataTable id="playersTable" var="tap" value="#{respostaBean.perguntas}" emptyMessage="sem registros" rowIndexVar="row" >
+			        <f:facet name="header">  
+			            Perguntas
+					    <span style="float:right">
+							<p:commandButton 
+											value="Boas Práticas" icon="ui-icon-plus" onclick="PF('dlgBoasPraticas').show();" /> 
+						</span><br />
+			        </f:facet>
+  		        	<p:column>			       
+   		        		<p:dataTable var="p" value="#{tap.perguntaModel}" rowIndexVar="rowTable">
+				            <f:facet name="header">  
+				                #{tap.dscTipoAplicacao}
+							</f:facet>
+				           
+				           <p:column style="width:4%;text-align:center">
+				           	<p:selectBooleanCheckbox value="#{p.autorizada}" widgetVar="checkboxResposta-#{row}-#{rowTable}"></p:selectBooleanCheckbox>
+				           </p:column>
+				            <p:column>   
+			             		<h:outputText value="#{p.dscPergunta}" />  
+				            </p:column>
+				            <p:column>
+						        <p:selectOneRadio id="options" value="#{p.respostas[0].dscResposta}" rendered="#{p.tipoFormatoResposta.id == 1}">
+						            <f:selectItem itemLabel="Sim" itemValue="Sim" />
+						            <f:selectItem itemLabel="Não" itemValue="Não" />
+						        </p:selectOneRadio>
+							    <p:inputTextarea rendered="#{p.tipoFormatoResposta.id == 2}" value="#{p.respostas[0].dscResposta}" style="width: 85%" readonly="true" onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));" /> 
+							    <p:inputTextarea rendered="#{p.tipoFormatoResposta.id == 4}" value="#{p.respostas[0].dscResposta}" style="width: 85%" readonly="true"/> 
+							    <p:inputMask  mask="99/99/9999" rendered="#{p.tipoFormatoResposta.id == 5}" value="#{p.respostas[0].dscResposta}" /> 
+								<p:commandLink>
+									<f:setPropertyActionListener
+										target="#{respostaBean.respostaTexto}"
+										value="#{p.respostas[0]}" />
+									<h:graphicImage rendered="#{p.tipoFormatoResposta.id == 2 || p.tipoFormatoResposta.id == 4}" value="/images/icone_note.png" width="18px" height="18px" title="Inserir resposta" alt="Inserir resposta" onclick="PF('dlgRes').show();" />
+								</p:commandLink>
+							</p:column>
+				            
+				            <p:column>
+	
+								<div class="iconGlobe"><span class="notification-count">#{(p.respostas[0].complementoResposta.size() != null) ? p.respostas[0].complementoResposta.size() : 0}</span></div>
+								<p:commandLink action="#{respostaBean.listComplementoResposta}" update=":form:formDialogComplemento:observacaoList">
+									<f:setPropertyActionListener
+										target="#{respostaBean.respostaSelecionada}"
+										value="#{p.respostas[0]}" />
+									<h:graphicImage value="/images/icone_note.png" width="18px" height="18px" title="Inserir Observação" alt="Inserir Observação" onclick="PF('dlgObs').show();" />
+								</p:commandLink>&nbsp;
+			
+								<div class="iconGlobe"><span class="notification-count">#{(p.respostas[0].deliberacao.size() != null) ? p.respostas[0].deliberacao.size() : 0}</span></div>
+			             		<p:commandLink action="#{respostaBean.listDeliberacao}" update=":form:formDialogDeliberacao:deliberacaoList">
+			             			<f:setPropertyActionListener
+										target="#{respostaBean.respostaSelecionada}"
+										value="#{p.respostas[0]}" />
+									<h:graphicImage value="/images/icone_juiz.png" width="20px" height="20px" title="Parecer do Juiz" alt="Parecer do Juiz" onclick="PF('dlgDel').show();"/>
+								</p:commandLink>
+								
+				            </p:column>
+				               
+			            </p:dataTable>
+		    		</p:column>
+			    </p:dataTable>
+			    
+			    <br />
+			    
+			    <div align="center">				    
+				    <span>
+						<p:commandButton widgetVar="botaoSalvarRespostas"
+										value="Salvar" icon="ui-icon-check" action="#{respostaBean.salvarRespostas}" onclick="if(!verificaRemeterTribunal()){ return false; }"/> 
+					</span>
+				</div>
+				
+				
+				
+				<p:dialog header="E-mail" id="DlgformDialogEmail" widgetVar="DlgformDialogEmail" resizable="true">
+						<h:panelGrid columns="2" style="margin-bottom:10px;" id="formRes">
+							<h:outputLabel for="email" value="E-mail" />
+							<p:inputText id="emailTribunal" value="#{respostaBean.email}"/>
+							<h:outputLabel for="data" value="Data Prazo" />
+							<p:inputMask id="dataTribunal"  mask="99/99/9999" value="#{respostaBean.data}"/>
+				  		<div align="center">
+				  			<span>
+				        		<p:commandButton action="#{respostaBean.salvarRespostas}" value="Salvar"/>
+				        	</span>  
+				        </div>
+						</h:panelGrid>
+				</p:dialog>
+				
+				<p:dialog header="Complemento Resposta" id="complemento" widgetVar="dlgObs" resizable="true" style="align:center;">  
+				    <h:form id="formDialogComplemento">  
+				  		
+				  		<p:fieldset legend="Lista de observações" style="margin-bottom:20px">
+					  		<p:dataTable id="observacaoList" value="#{respostaBean.complementoRespostaList}" var="obs" emptyMessage="sem complemento resposta" style="width:650px;">
+					           
+					            <p:column headerText="Tipo Complemento">   
+				             		<h:outputText value="#{obs.tipoComplementoResposta.dscTipoComplementoResposta}"  style="width:30%;"/>  
+					            </p:column>
+					            
+					            <p:column headerText="Complemento">   
+				             		<h:outputText value="#{(obs.dscComplementoResposta.length() > 200) ? obs.dscComplementoResposta.substring(0,200).concat('...') : obs.dscComplementoResposta}" />  
+					            </p:column>
+					            
+						            
+					            <p:column headerText="Ação" style="width:15%; horizontal-align:right">
+		
+									<p:commandLink process="@this" update=":form:formDialogComplemento:formComp">
+										<f:setPropertyActionListener
+											target="#{respostaBean.complementoResposta}"
+											value="#{obs}" />
+										<h:graphicImage value="/images/icone_editar.png" title="Alterar observação resposta" alt="Alterar observação resposta"/>
+									</p:commandLink>&nbsp;
+									
+				             		<p:commandLink action="#{respostaBean.removerComplemento}" process="@this" update="observacaoList">
+				                		<f:setPropertyActionListener
+											target="#{respostaBean.complementoResposta}"
+											value="#{obs}" />
+				                		<h:graphicImage value="/images/icone_excluir.png" width="20px" height="20px" title="Excluir observação resposta" alt="Excluir observação resposta"/>
+					                </p:commandLink>  
+					            </p:column>
+						    </p:dataTable> 
+						</p:fieldset>
+					    
+				  		<p:fieldset legend="Nova observação" style="margin-bottom:20px">
+					        <h:panelGrid columns="2" style="margin-bottom:10px;" id="formComp">  
+								
+								<h:outputText value="Tipo Complemento" />
+								<p:selectOneMenu id="tipoComplemento"
+									value="#{respostaBean.complementoResposta.tipoComplementoResposta}" 
+									converter="#{tipoComplementoRespostaConverter}">
+									<f:selectItem itemLabel="Selecione..." itemValue="" />
+									<f:selectItems value="#{tipoComplementoRespostaBean.all}"
+										var="tipoComplementoResposta"
+										itemLabel="#{tipoComplementoResposta.dscTipoComplementoResposta}"
+										itemValue="#{tipoComplementoResposta}" />
+								</p:selectOneMenu>
+								
+								<h:outputLabel for="observacao" value="Complemento" />  
+					            <p:editor id="observacao" value="#{respostaBean.complementoResposta.dscComplementoResposta}"  style="width:530px" />
+					            
+					        </h:panelGrid>
+					  
+					  		<div align="center">
+					  			<span>
+					        		<p:commandButton id="submitButtonComplemento" value="Salvar" process=":form:formDialogComplemento" update="observacaoList observacao tipoComplemento" action="#{respostaBean.salvaComplementoResposta}"/>
+					        	</span>  
+					        </div>
+					    </p:fieldset>
+				        
+				    </h:form>  
+				</p:dialog>
+				
+				<p:dialog header="Parecer do Juiz" id="deliberacao" widgetVar="dlgDel" resizable="true" style="align:center;">  
+				    <h:form id="formDialogDeliberacao">  
+				    
+					    <p:fieldset legend="Lista de deliberações" style="margin-bottom:20px">
+					    	<p:dataTable id="deliberacaoList" value="#{respostaBean.deliberacaoList}" var="del" emptyMessage="sem deliberações" rowIndexVar="row" style="width:650px;">
+					            <p:column headerText="Tipo deliberação" style="width:20%;">   
+				             		<h:outputText value="#{del.tipoDeliberacao.dscTipoDeliberacao}" />  
+					            </p:column>
+					            
+					            <p:column headerText="Parecer do Juiz">   
+				             		<h:outputText value="#{(del.descricao.length() > 200) ? del.descricao.substring(0,200).concat('...') : del.descricao}" />  
+					            </p:column>
+					            
+					            <p:column headerText="Ação" style="width:15%; horizontal-align:right">
+									<p:commandLink process="@this" update=":form:formDialogDeliberacao:formDel">
+										<f:setPropertyActionListener
+											target="#{respostaBean.deliberacao}"
+											value="#{del}" />
+										<h:graphicImage value="/images/icone_editar.png" title="Alterar deliberação" alt="Alterar deliberação"/>
+									</p:commandLink>&nbsp;
+									
+				             		<p:commandLink action="#{respostaBean.removerDeliberacao}" process="@this" update="deliberacaoList">
+				                		<f:setPropertyActionListener
+											target="#{respostaBean.deliberacao}"
+											value="#{del}" />
+				                		<h:graphicImage value="/images/icone_excluir.png" width="20px" height="20px" title="Excluir deliberação" alt="Excluir deliberação"/>
+					                </p:commandLink>  
+					            </p:column>
+						    </p:dataTable> 
+						</p:fieldset>
+					    
+					    <p:fieldset legend="Nova deliberação" style="margin-bottom:20px">
+					        <h:panelGrid columns="2" style="margin-bottom:10px;" id="formDel">  
+								
+								<h:outputText value="Tipo Deliberação " />
+								<p:selectOneMenu
+									value="#{respostaBean.deliberacao.tipoDeliberacao}" 
+									converter="#{tipoDeliberacaoConverter}">
+									<f:selectItem itemLabel="Selecione..." itemValue="" />
+									<f:selectItems value="#{tipoDeliberacaoBean.all}"
+										var="tipoDeliberacao"
+										itemLabel="#{tipoDeliberacao.dscTipoDeliberacao}"
+										itemValue="#{tipoDeliberacao}" />
+								</p:selectOneMenu>
+								
+								<h:outputLabel for="numDiasPrazoCumprimento" value="Prazo(dias)" />  
+								<p:inputText id="numDiasPrazoCumprimento" value="#{respostaBean.deliberacao.numDiasPrazoCumprimento}"/>
+	        
+								<h:outputLabel for="dscDeliberacao" value="Parecer do Juiz" />  
+					            <p:editor id="dscDeliberacao" value="#{respostaBean.deliberacao.descricao}" style="width:530px"/>
+					            
+					        </h:panelGrid>  
+				  
+					  		<div align="center">
+					  			<span>
+					        		<p:commandButton id="submitButtonDeliberacao" value="Salvar" process=":form:formDialogDeliberacao" update="deliberacaoList formDel" action="#{respostaBean.salvaDeliberacao}"/>
+					        	</span>  
+					        </div>
+						</p:fieldset>
+				        
+				    </h:form>  
+				</p:dialog>
+				
+				<p:dialog header="Resposta" id="resposta" widgetVar="dlgRes" resizable="true" style="align:center;">  
+				    <h:form id="formDialogResposta">  
+					    
+				        <h:panelGrid columns="2" style="margin-bottom:10px;" id="formRes">  
+							
+							<h:outputLabel for="resposta" value="Resposta" />  
+				            <p:editor id="respostaText" value="#{respostaBean.respostaTexto.dscResposta}"  style="width:530px" />
+				            
+				        </h:panelGrid>
+				  
+				  		<div align="center">
+				  			<span>
+				        		<p:commandButton id="submitButtonResposta" value="Salvar" action="#{respostaBean.salvaRespostaText}" process=":form:formDialogResposta"/>
+				        	</span>  
+				        </div>
+				        
+				    </h:form>  
+				</p:dialog>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+

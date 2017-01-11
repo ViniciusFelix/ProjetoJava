@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:app="http://springfuse.jaxio.com/app" contentType="text/html"
+	encoding="UTF-8">
+
+	<html xmlns="http://www.w3.org/1999/xhtml"
+		xml:lang="${contaContext.locale}" lang="${contaContext.locale}">
+
+<h:head>
+	<title>SACI - Sistema de Apoio às Correições e Inspeções</title>
+	
+	<link rel="stylesheet" type="text/css"
+		href="#{facesContext.externalContext.requestContextPath}/public/styles/contraste.css"
+		media="screen" />
+
+	<link rel="stylesheet" type="text/css"
+		href="#{facesContext.externalContext.requestContextPath}/public/styles/bootstrap.css"
+		media="screen" />
+	<link rel="stylesheet" type="text/css"
+		href="#{facesContext.externalContext.requestContextPath}/public/styles/tmpl.css"
+		media="screen" />	
+		
+	<link rel="stylesheet" type="text/css"
+		href="#{facesContext.externalContext.requestContextPath}/public/styles/default.css"
+		media="screen" />
+	<script
+		src="#{facesContext.externalContext.requestContextPath}/public/js/acessibilidade.js"></script>
+	<script
+		src="#{facesContext.externalContext.requestContextPath}/public/js/primefaces-pt_BR.js"></script>
+	<ui:insert name="head"></ui:insert>
+</h:head>
+<h:body class="layout">
+	<p:ajaxStatus>
+		<f:facet name="start">
+			<div class="ui-corner-all ajax-status">
+				<h:graphicImage value="/public/images/ajax-loader.gif"
+					style="vertical-align: middle" />
+				<span style="vertical-align: middle"><h:outputText
+						value=" Carregando..." /></span>
+			</div>
+		</f:facet>
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+	<div id="page">
+		<div class="topo">
+			<div class="marca">
+				<div class="marca-cnj">
+					<a href="http://www.cnj.jus.br" target="_blank"> <img
+						src="#{facesContext.externalContext.requestContextPath}/public/images/marca_cnj.png"
+						alt="Marca CNJ" />
+					</a>
+				</div>
+				<div class="marca-judiciario">
+					<a href="http://www.cnj.jus.br" target="_blank"> <img
+						src="#{facesContext.externalContext.requestContextPath}/public/images/marca_jus.png"
+						alt="Marca CNJ" />
+					</a>
+				</div>
+			</div>
+		</div>
+	
+		<div class="indetificacao_sistema">
+			<div class="id_sis_interna">
+				<div class="acessibilidade">
+					<a accesskey="3" href="#" class="toggle-diminuir">Diminuir letra
+						A- </a>| <a accesskey="3" href="#" class="toggle-aumentar">Aumentar
+						letra A+ </a>| <a accesskey="3" href="#" class="toggle-resetar">Tamanho
+						normal da letra A </a>| <a accesskey="3" href="#"
+						class="toggle-contraste">Alto Contraste</a>
+				</div>
+				<div class="nome_sitema">Sistema de Apoio às Correições e
+					Inspeções</div>
+	
+			</div>
+		</div>
+	
+		<div class="nav_menu">
+			<div class="nav_menu_int">
+				<div class="nav_id_orgao">
+					<i class="icon-home"></i><h:outputText id="orgaoSessao" value=" #{corporativoSistemaBC.orgaoSessao}"/>
+				</div>
+	
+				<div class="nav_id_ususario">
+					<i class="icon-user"></i><h:outputText id="nomeSessao" value=" #{corporativoSistemaBC.nomeSessao} "/><i class="icon-lock"></i>
+					<p:commandLink value=" Sair" action="#{corporativoSistemaBC.doLogout}" onclick="window.location.href='http://wwwh.cnj.jus.br/corporativo'" />
+				</div>
+			</div>
+			<div class="clr">
+				<!--clear float -->
+			</div>
+		</div>
+	
+		<div class="menu navbar">
+			<button type="button" class="btn btn-navbar" data-toggle="collapse"
+				data-target=".nav-collapse">
+				<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<h:form>
+				<p:menubar>
+					
+					<p:submenu label="#{messages['menu.inspecao']}" rendered="#{determinacaoBean.credencialSession.perfil != 'Tribunal'}">
+						<p:menuitem value="#{messages['menu.relatorio']}" action="#{inspecaoBean.listagemEsfera}"/>
+						<p:menuitem value="#{messages['menu.inspecao.listar']}" action="#{inspecaoBean.redirecionarPaginaListar}"/>
+						<p:menuitem value="#{messages['menu.inspecao.novo']}" action="#{inspecaoBean.redirecionarPaginaCadastro}"/>				
+					</p:submenu>
+				 
+					<p:submenu label="#{messages['menu.gestao']}" rendered="#{determinacaoBean.credencialSession.perfil != 'Tribunal'}">
+						<p:menuitem value="#{messages['menu.modeloPergunta']}" action="#{modeloPerguntaBean.redirecionarPaginaListar}"/>
+						<p:menuitem value="#{messages['menu.tipoAta']}" action="/pages/tipoAplicacaoPergunta/listar.jsf"/>
+						<p:menuitem value="#{messages['menu.tipoResposta']}" action="/pages/tipoFormatoResposta/listar.jsf"/>
+						<p:menuitem value="#{messages['menu.tipoObjeto']}" action="#{tipoObjetoAplicacaoBean.redirecionarPaginaListar}"/>
+						<p:menuitem value="#{messages['menu.tipoDocumento']}" action="#{tipoDocumentoBean.redirecionarPaginaListar}"/>	
+						<p:menuitem value="#{messages['menu.tipoDeliberacao']}" action="#{tipoDeliberacaoBean.redirecionarPaginaListar}"/>	
+						<p:menuitem value="#{messages['menu.tipoComplementoResposta']}" action="#{tipoComplementoRespostaBean.redirecionarPaginaListar}"/>			
+					</p:submenu>
+				 
+						<p:menuitem value="#{messages['menu.questionario']}" action="#{respostaTribunalBean.redirecionaRespostaTribunal}" rendered="#{determinacaoBean.credencialSession.perfil == 'Tribunal'}"/>	
+						<p:menuitem value="#{messages['menu.determinacao']}" action="#{determinacaoBean.redirecionaDeterminacaoTribunal}"  rendered="#{determinacaoBean.credencialSession.perfil == 'Tribunal'}" />		
+					
+				</p:menubar>
+			</h:form>		
+		</div>
+	
+		<p:spacer height="10" />	
+			
+		<p:growl id="messages" showDetail="false" autoUpdate="true" />
+		  
+		<div class="corpo form-horizontal">
+			<ui:insert name="content">
+			</ui:insert>
+		</div>
+	
+		<div id="clear"></div>
+		<div class="rodape">Sistema de Apoio às Correições e Inspeções -
+			Conselho Nacional de Justiça</div>
+	</div>
+</h:body>
+	</html>
+</f:view>

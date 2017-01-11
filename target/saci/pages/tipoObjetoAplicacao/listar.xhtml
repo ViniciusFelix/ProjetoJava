@@ -1,0 +1,76 @@
+<!DOCTYPE ui:composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/template/default.xhtml">
+	<ui:define name="head">
+	</ui:define>
+	<ui:define name="content">
+		<f:view>
+			<h:form prependId="false">
+			
+				<p:panel header="Lista de Tipos de Objetos">
+
+					<p:dataTable value="#{tipoObjetoAplicacaoBean.all}" var="tipoObjetoAplicacao"
+						paginator="true" rows="10"
+						paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="10,15,30">
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Descrição" />
+							</f:facet>
+							<h:outputText value="#{tipoObjetoAplicacao.dscTipoObjetoAplicacao}" />
+						</p:column>
+
+						<p:column style="width:11%;">
+							<f:facet name="header">
+								<h:outputText value="Ação" />
+							</f:facet>
+							
+							<h:commandLink
+								action="#{tipoObjetoAplicacaoBean.redirecionarPaginaAlterar}">
+								<f:setPropertyActionListener
+									target="#{tipoObjetoAplicacaoBean.tipoObjetoAplicacao}" value="#{tipoObjetoAplicacao}" />
+								<h:graphicImage value="/images/icone_editar.png" width="25px" height="25px"/>
+							</h:commandLink>
+
+							<p:commandLink onclick="confirmation#{tipoObjetoAplicacao.id}.show()">
+								<h:graphicImage value="/images/icone_excluir.png" width="20px" height="20px"/>
+							</p:commandLink>
+
+							<p:confirmDialog
+								message="Deseja realmente excluir este registro?"
+								header="Excluir registro" severity="alert"
+								widgetVar="confirmation#{tipoObjetoAplicacao.id}">
+
+								<p:commandButton action="#{tipoObjetoAplicacaoBean.excluirTipoObjetoAplicacao}"
+									onclick="confirmation#{tipoObjetoAplicacao.id}.hide()"
+									value="Sim">
+									<f:setPropertyActionListener
+										target="#{tipoObjetoAplicacaoBean.tipoObjetoAplicacao}" value="#{tipoObjetoAplicacao}" />
+								</p:commandButton>
+
+								<p:commandButton value="Não"
+									onclick="confirmation#{tipoObjetoAplicacao.id}.hide()" type="button" />
+							</p:confirmDialog>
+						</p:column>
+
+					</p:dataTable>
+					<br />
+					<div align="center">
+						<p:commandButton
+							action="#{tipoObjetoAplicacaoBean.redirecionarPaginaCadastro}" 
+							value="Novo tipo de objeto" icon="ui-icon-plus"/>
+					</div>
+
+				</p:panel>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+

@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/default.xhtml">
+	<ui:define name="head">
+	</ui:define>
+	<ui:define name="content">
+		<f:view>
+			<h:form prependId="false">
+			
+				<p:panel header="Lista de Tipos de Deliberação">
+
+					<p:dataTable value="#{tipoDeliberacaoBean.all}" var="tipoDeliberacao"
+						emptyMessage="Nenhum registro encontrado"
+						paginator="true" rows="10"
+						paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="10,15,30">
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Descrição" />
+							</f:facet>
+							<h:outputText value="#{tipoDeliberacao.dscTipoDeliberacao}" />
+						</p:column>
+						
+						<p:column style="width:8%;">
+							<f:facet name="header">
+								<h:outputText value="Ação" />
+							</f:facet>
+							
+							<h:commandLink
+								action="#{tipoDeliberacaoBean.redirecionarPaginaAlterar}">
+								<f:setPropertyActionListener
+									target="#{tipoDeliberacaoBean.tipoDeliberacao}" value="#{tipoDeliberacao}" />
+								<h:graphicImage value="/images/icone_editar.png" width="25px" height="25px"/>
+							</h:commandLink>
+
+							<p:commandLink onclick="confirmation#{tipoDeliberacao.id}.show()">
+								<h:graphicImage value="/images/icone_excluir.png" width="20px" height="20px"/>
+							</p:commandLink>
+
+							<p:confirmDialog
+								message="Deseja realmente excluir este registro?"
+								header="Excluir registro" severity="alert"
+								widgetVar="confirmation#{tipoDeliberacao.id}">
+
+								<p:commandButton action="#{tipoDeliberacaoBean.excluirTipoDeliberacao}"
+									onclick="confirmation#{tipoDeliberacao.id}.hide()"
+									value="Sim">
+									<f:setPropertyActionListener
+										target="#{tipoDeliberacaoBean.tipoDeliberacao}" value="#{tipoDeliberacao}" />
+								</p:commandButton>
+
+								<p:commandButton value="Não"
+									onclick="confirmation#{tipoDeliberacao.id}.hide()" type="button" />
+							</p:confirmDialog>
+						</p:column>
+					</p:dataTable>
+					<br />
+					<div align="center">
+						<p:commandButton
+							action="#{tipoDeliberacaoBean.redirecionarPaginaCadastro}" 
+							value="Novo tipo de deliberação" icon="ui-icon-plus"/>
+					</div>
+
+				</p:panel>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+

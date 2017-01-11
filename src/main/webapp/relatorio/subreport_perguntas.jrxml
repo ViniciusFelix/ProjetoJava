@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subreport_perguntas" pageWidth="555" pageHeight="802" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="23ab524a-1ea3-40c4-b56a-885ed6cd110a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="inspecao_orgao" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Desenvolvimento\\saci\\src\\main\\webapp\\relatorio\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="dscPergunta" class="java.lang.String"/>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="numOrdem" class="java.lang.Integer"/>
+	<field name="respostas" class="java.util.List"/>
+	<field name="tipoFormatoResposta.id" class="java.lang.Object"/>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement isPrintRepeatedValues="false" x="0" y="1" width="555" height="20" uuid="73fa8d6b-af17-43a6-98a6-990d737a7af8"/>
+				<textElement>
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dscPergunta}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="10" y="21" width="545" height="19" uuid="8e392e78-5d52-4639-820a-0649464d14b1"/>
+				<subreportParameter name="inspecao_orgao">
+					<subreportParameterExpression><![CDATA[$P{inspecao_orgao}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="tpReposta">
+					<subreportParameterExpression><![CDATA[$F{tipoFormatoResposta.id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{respostas})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["subreport_respostas.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

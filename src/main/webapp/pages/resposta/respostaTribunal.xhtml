@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/default.xhtml">
+	<ui:define name="head">
+	</ui:define>
+	<ui:define name="content">
+		<f:view>
+			<h:form prependId="false" id="form">				
+				<p:dataTable id="playersTable" var="tap" value="#{respostaTribunalBean.perguntas}" emptyMessage="sem registros" rowIndexVar="row">
+				    <f:facet name="header">  
+			            Perguntas
+			        </f:facet>
+			        			       
+   		        		<p:column>			       
+	   		        		<p:dataTable var="p" value="#{tap.perguntas}">
+			            <f:facet name="header">  
+			                #{tap.dscTipoAplicacao}
+						</f:facet>
+			           
+			            <p:column>   
+		             		<h:outputText value="#{p.dscPergunta}" />  
+			            </p:column>
+			            
+			            <p:column>
+					        <p:selectOneRadio id="options" value="#{p.respostas[0].dscResposta}" rendered="#{p.tipoFormatoResposta.id == 1}">
+					            <f:selectItem itemLabel="Sim" itemValue="Sim" />
+					            <f:selectItem itemLabel="Não" itemValue="Não" />
+					        </p:selectOneRadio>
+						    <p:inputText rendered="#{p.tipoFormatoResposta.id == 2}" value="#{p.respostas[0].dscResposta}" onkeyup="$(this).val($(this).val().replace(/[^0-9]/g, ''));" /> 
+						    <p:inputText rendered="#{p.tipoFormatoResposta.id == 4}" value="#{p.respostas[0].dscResposta}" style="width: 85%" /> 
+						    <p:inputMask  mask="99/99/9999" rendered="#{p.tipoFormatoResposta.id == 5}" value="#{p.respostas[0].dscResposta}" /> 
+						</p:column>			               
+		            </p:dataTable>
+		              
+			    </p:column>
+			    </p:dataTable>
+			    
+			    <br />
+			    
+			    <div align="center">				    
+				    <span>
+						<p:commandButton action="#{respostaTribunalBean.salvarRespostas}"
+										value="Salvar" icon="ui-icon-check" /> 
+					</span>
+				</div>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+

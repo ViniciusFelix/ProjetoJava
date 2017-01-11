@@ -1,0 +1,56 @@
+.ui-helper-hidden
+{
+    display: none;
+}
+
+.botao{
+	margin-top: 20px;
+	margin-left: 45%;
+}
+
+
+.text-input {
+	font-family: tahoma;
+	font-size: 16px;
+	color:#353535;
+	font-weight: bold;
+	margin-right: 5px;
+}
+.columnNome{
+	text-align: left;
+	width: 10%;
+}
+.columnSelect{
+	text-align: left;
+	width: 70%;
+}
+
+.columnPortaria {
+	text-align: left;
+	width: 90px;
+}
+.columnPortariaInput{
+	text-align: left;
+	width: 400px; 
+}
+.columnDataAte{
+	text-align: left;
+	width: 60px; 
+}
+.columnData1{
+	text-align: left;
+	width: 180px; 
+}
+.columnAte{
+	text-align: left;
+	width: 10px; 
+}
+.columnData2{
+	text-align: left;
+	width: 200px; 
+}
+
+.columnSelectEstado{
+	text-align: left;
+	width: 600px; 
+}

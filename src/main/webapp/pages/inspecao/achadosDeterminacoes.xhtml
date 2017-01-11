@@ -1,0 +1,223 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/default.xhtml">
+	<ui:define name="head">
+	</ui:define>
+	<ui:define name="content">
+		<f:view>
+			<h:form id="form">  
+			<p:commandButton value="Novo Achado" id="btnNovoAchado" process="@this" update=":formDialogNovoAchado" onclick="PF('DlgNovoAchado').show()" />
+
+				<p:panel visible="true" id="painelAchados" closable="false" toggleable="false" header="Achados / Determinações">
+		  		    <p:dataTable id="achadosTable" var="achado" value="#{inspecaoBean.achados}" widgetVar="achadosTable"
+				            emptyMessage="Nenhuma inspeção ou correição encontrada com os critérios pesquisados"
+				            paginator="true" rows="10"
+							paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,15,30">
+				              
+				        <f:facet name="header">  
+				            <p:outputPanel style="text-align: right">  
+				                <p:inputText id="globalFilter" onkeyup="PF('inspecaoTable').filter()" size="95"/>
+				                <p:watermark for="globalFilter" value="Pesquisa geral" />   
+				            </p:outputPanel>  
+				        </f:facet>
+				        
+				        <p:column id="dscAchado" headerText="Achados" >  
+			            <strong><h:outputText value="#{achado.dscAchado}" /></strong> 
+			            
+				            <p:dataTable emptyMessage="Nenhuma Determinação Cadastrada." value="#{achado.determinacoes}"  var="det">
+				            	<p:column id="dscDeterminacao" headerText="Determinações" >
+									<h:outputText value="#{det.dscDeterminacaoInspecao}" />
+								</p:column>
+								<p:column width="25%" headerText="Prazo">
+									<h:outputText id="detalheSituacao" value="#{det.statusDeterminacao}" style="color:green;" />
+									<p:tooltip id="toolTipFade" for="detalheSituacao" value="#{det.dscRespostaTribunal}" position="right"/>
+<!-- 									<h:outputText rendered="#{0>inspecaoBean.diasRestantes(det.datInicialPrazo, det.diasPrazo) and det.flgCumprimento.toString() != '1'}" value="(Esgotado)" style="color:red;" /> -->
+									<h:outputText rendered="#{inspecaoBean.diasRestantes(det.datInicialPrazo, det.diasPrazo) > det.diasPrazo and det.flgCumprimento.toString() != '1'}" value="Prazo se inicia dia #{det.datInicialPrazo} dias" /> 
+									<p:progressBar rendered="#{inspecaoBean.diasRestantes(det.datInicialPrazo, det.diasPrazo)>0 and  det.diasPrazo>=inspecaoBean.diasRestantes(det.datInicialPrazo, det.diasPrazo) and det.flgCumprimento.toString() != '1'}" value="#{100-(100* inspecaoBean.diasRestantes(det.datInicialPrazo, det.diasPrazo)/det.diasPrazo)}" labelTemplate="#{inspecaoBean.diasRestantes(det.datInicialPrazo, det.diasPrazo)} dias restantes" displayOnly="true"/>
+								</p:column>
+								<p:column width="25%" headerText="Status">
+									<h:outputText value="#{det.statusDeterminacao}" />
+								</p:column>
+								
+				        <p:column id="detAcao" width="15%">  
+							<p:commandLink process="@this" update=":formDialogAlteraDeterminacao"
+								 onclick="PF('DlgAlteraDeterminacao').show()">
+								<f:setPropertyActionListener
+									target="#{inspecaoBean.determinacaoSelected}"
+									value="#{det}" />
+								<h:graphicImage value="/images/icone_editar.png" width="14px" height="14px" title="Editar Determinação" alt="Editar Determinação"/>
+							</p:commandLink>
+							
+							<p:commandLink 
+								 onclick="PF('DlgSalvarAlteracaoDeterminacao').show()">
+								<f:setPropertyActionListener
+									target="#{inspecaoBean.determinacaoSelected}"
+									value="#{det}" />
+								<h:graphicImage value="/images/resolvido.png" width="14px" height="14px" title="Alterar situação" alt="Alterar situação"/>
+							</p:commandLink>
+							
+							<p:commandLink onclick="PF('confirmacaoDet#{det.id}').show()">
+								<h:graphicImage value="/images/icone_excluir.png" width="14px" height="14px" title="Excluir Determinação?" alt="Excluir Determinação"/>
+							</p:commandLink>
+							<p:confirmDialog
+								message="Deseja realmente excluir esta determinação? Esta operação não poderá ser desfeita."
+								header="Excluir registro" severity="alert"
+								widgetVar="confirmacaoDet#{det.id}">
+		
+								<p:commandButton
+									action="#{inspecaoBean.excluirDeterminacao}"
+									value="Sim">
+									<f:setPropertyActionListener
+										target="#{inspecaoBean.determinacaoSelected}"
+										value="#{det}" />
+								</p:commandButton>
+		
+								<p:commandButton value="Não"
+									onclick="PF('confirmacaoDet#{det.id}').hide()"
+									type="button" />
+							</p:confirmDialog> 
+			        	</p:column>
+			        	
+					   		</p:dataTable> 
+			        	</p:column>
+			        	
+				        <p:column id="achadoAcao" width="10%">  
+							<p:commandLink process="@this" update=":formDialogAlteraAchado"
+								 onclick="PF('DlgAlteraAchado').show()">
+								<f:setPropertyActionListener
+									target="#{inspecaoBean.achadoSelected}"
+									value="#{achado}" />
+								<h:graphicImage value="/images/icone_editar.png" width="14px" height="14px" title="Editar Achado" alt="Editar Achado"/>
+							</p:commandLink>
+							    
+							<p:commandLink 
+								 onclick="PF('DlgCadastraDeterminacao').show()" process="@this" update=":formDialogNovaDeterminacao">
+								<f:setPropertyActionListener
+									target="#{inspecaoBean.novaDeterminacao.achadoInspecao}"
+									value="#{achado}" />
+								<h:graphicImage value="/images/plus.png" width="14px" height="14px" title="Nova Determinação" alt="Nova Determinação"/>
+							</p:commandLink> 
+							
+							
+							<p:commandLink onclick="PF('confirmacao#{achado.id}').show()">
+								<h:graphicImage value="/images/icone_excluir.png" width="14px" height="14px" title="Excluir inspecao" alt="Excluir inspeçao"/>
+							</p:commandLink>
+							<p:confirmDialog
+								message="Deseja realmente excluir este achado? Todas as determinações também serão excluídas e esta operação não poderá ser desfeita."
+								header="Excluir registro" severity="alert"
+								widgetVar="confirmacao#{achado.id}">
+		
+								<p:commandButton
+									action="#{inspecaoBean.excluirAchado}"
+									value="Sim">
+									<f:setPropertyActionListener
+										target="#{inspecaoBean.achadoSelected}"
+										value="#{achado}" />
+								</p:commandButton>
+		
+								<p:commandButton value="Não"
+									onclick="PF('confirmation#{achado.id}').hide()"
+									type="button" />
+							</p:confirmDialog> 
+			        	</p:column>
+											
+
+				    </p:dataTable> 
+				</p:panel>
+				
+			</h:form> 
+
+				<p:dialog header="Achado" id="DlgNovoAchado" widgetVar="DlgNovoAchado" modal="true" width="500px" resizable="true">
+				    <h:form id="formDialogNovoAchado">  
+						<h:panelGrid columns="2" style="margin-bottom:10px;" id="formNovoAchado">
+							<h:outputLabel for="Descricao" value="Descrição do Achado" />
+							<p:inputTextarea id="dscNovoAchado" value="#{inspecaoBean.novoAchado.dscAchado}" cols="50"/>
+				  		<div align="center">
+				  			<span>
+				        		<p:commandButton oncomplete="PF('DlgNovoAchadof').hide();" action="#{inspecaoBean.cadastrarAchado}" update=":form:achadosTable" value="Salvar"/>
+				        	</span>  
+				        </div>
+						</h:panelGrid>
+						</h:form>
+				</p:dialog> 
+				
+				<p:dialog header="Achado" id="DlgAlteraAchado" widgetVar="DlgAlteraAchado" modal="true" width="500px" resizable="true">
+				    <h:form id="formDialogAlteraAchado">  
+						<h:panelGrid columns="2" style="margin-bottom:10px;" id="formAlteraAchado">
+							<h:outputLabel for="Descricao" value="Descrição do Achado" />
+							<p:inputTextarea id="dscAchado" value="#{inspecaoBean.achadoSelected.dscAchado}" cols="50"/>
+				  		<div align="center">
+				  			<span>
+				        		<p:commandButton oncomplete="PF('DlgAlteraAchado').hide();" action="#{inspecaoBean.alterarAchado}" update=":form:achadosTable" value="Salvar"/>
+				        	</span>  
+				        </div>
+						</h:panelGrid>
+						</h:form>
+				</p:dialog> 
+				
+				<p:dialog header="Alterar Situação" id="DlgSalvarAlteracaoDeterminacao" widgetVar="DlgSalvarAlteracaoDeterminacao" modal="true" width="500px" resizable="true">
+				    <h:form id="formDialogSalvarAlteracaoDeterminacao">  
+						<h:panelGrid columns="2" id="fromAlterarDeterminacao">
+							<h:outputLabel for="Resposta" value="Resposta tribunal" />
+							<p:inputTextarea id="dscRespostaTribunal" value="#{inspecaoBean.determinacaoSelected.dscRespostaTribunal}" cols="50"/>
+							<h:outputLabel for="situacao" value="Situação determinação" />
+							<p:selectOneMenu
+								value="#{inspecaoBean.tipoStatusDeterminacao}" converter="#{tipoStatusDeterminacaoConverter}">
+								<f:selectItem itemLabel="Selecione ..." itemValue="" />
+								<f:selectItems value="#{determinacaoBean.tipoStatusDeterminacaoAll}"
+									var="tipoStatusDeterminacao"
+									itemLabel="#{tipoStatusDeterminacao.dscTipoStatusAchado}"
+									itemValue="#{tipoStatusDeterminacao}" />
+							</p:selectOneMenu>	  		
+							<div align="center">
+				  				<span>
+									<p:commandButton oncomplete="PF('DlgSalvarAlteracaoDeterminacao').hide();" action="#{inspecaoBean.salvarStatusDeterminacao}" update=":form:achadosTable" value="Salvar" />
+								</span>
+							</div>
+						</h:panelGrid>
+					</h:form>
+				</p:dialog>
+				
+				<p:dialog header="Altera Determinação" id="DlgAlteraDeterminacao" widgetVar="DlgAlteraDeterminacao" modal="true" width="500px" resizable="true">
+				    <h:form id="formDialogAlteraDeterminacao">  
+						<h:panelGrid columns="2" style="margin-bottom:10px;" id="formAltDet">
+							<h:outputLabel for="Descricao" value="Descrição da Determinação" />
+							<p:inputTextarea id="dscDeterminacao" value="#{inspecaoBean.determinacaoSelected.dscDeterminacaoInspecao}" cols="50"/>
+							<h:outputLabel for="Prazo" value="Prazo (dias)" />
+							<p:inputText id="prazo" value="#{inspecaoBean.determinacaoSelected.diasPrazo}" />
+							<h:outputLabel for="Data" value="Início do Prazo" />
+							<p:calendar id="dataInicial" value="#{inspecaoBean.determinacaoSelected.datInicialPrazo}" />
+				  		<div align="center">
+				  			<span>
+				        		<p:commandButton oncomplete="PF('DlgAlteraDeterminacao').hide();"  action="#{inspecaoBean.alterarDeterminacao}" update=":form:achadosTable" value="Salvar"/>
+				        	</span>  
+				        </div>
+						</h:panelGrid>
+					</h:form>
+				</p:dialog> 
+				
+				<p:dialog header="Nova Determinação" id="DlgCadastraDeterminacao" widgetVar="DlgCadastraDeterminacao" modal="true" width="500px" resizable="true">
+				    <h:form id="formDialogNovaDeterminacao">  
+						<h:panelGrid columns="2" style="margin-bottom:10px;" id="formDet">
+							<h:outputLabel for="Descricao" value="Descrição da Determinação" />
+							<p:inputTextarea id="dscDeterminacao" value="#{inspecaoBean.novaDeterminacao.dscDeterminacaoInspecao}" cols="50"/>
+							<h:outputLabel for="Prazo" value="Prazo (dias)" />
+							<p:inputText id="prazo" value="#{inspecaoBean.novaDeterminacao.diasPrazo}" />
+							<h:outputLabel for="Data" value="Início do Prazo" />
+							<p:calendar id="dataInicial" value="#{inspecaoBean.novaDeterminacao.datInicialPrazo}" />
+				  		<div align="center">
+				  			<span>
+				        		<p:commandButton oncomplete="PF('DlgCadastraDeterminacao').hide();"  action="#{inspecaoBean.cadastrarDeterminacao}" update=":form:achadosTable" value="Salvar"/>
+				        	</span>  
+				        </div>
+						</h:panelGrid>
+					</h:form>
+				</p:dialog> 
+
+		</f:view>
+	</ui:define>
+</ui:composition>

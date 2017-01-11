@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/default.xhtml">
+	<ui:define name="head">
+	</ui:define>
+	<ui:define name="content">
+		<f:view>
+			<h:form prependId="false" id="form">
+				<p:dataTable id="playersTable"
+					value="#{(determinacaoBean.orgaos.size() > 0) ? determinacaoBean.orgaos : determinacaoBean.cartorios}"
+					var="unidade">
+					<f:facet name="header">  
+			            Determinações
+			        </f:facet>
+
+					<p:column>
+						<p:dataTable value="#{unidade.deliberacoes}" var="deliberacao">
+							<f:facet name="header">  
+			                #{unidade}
+						</f:facet>
+
+							<p:column>
+								<h:outputText
+									value="#{deliberacao.resposta.pergunta.dscPergunta}" />
+							</p:column>
+
+							<p:column>
+								<h:outputText value="#{deliberacao.descricao}" />
+							</p:column>
+
+							<p:column>
+								<h:outputText
+									value="#{deliberacao.resposta.pergunta.tipoAplicacaoPergunta.dscTipoAplicacao}" />
+							</p:column>
+
+							<p:column>
+								<h:outputText
+									value="#{determinacaoBean.getMensagem(deliberacao.flagResolvida)}" />
+								</p:column>
+								
+							<p:column>
+								<h:outputText value="#{deliberacao.numProcedimento}" />
+							</p:column>
+
+
+							<p:column width="30">
+								<p:commandLink
+									action="#{determinacaoBean.listarAcompanhamentoDeliberacoes}"
+									update=":form:formDialogDeliberacao:deliberacaoList">
+									<f:setPropertyActionListener
+										target="#{determinacaoBean.deliberacaoSelecionada}"
+										value="#{deliberacao}" />
+									<h:graphicImage value="/images/icone_editar.png"
+										title="Réplicas" alt="Réplicas"
+										onclick="PF('dlgHistorico').show(); escondeFechaDeterminacao();" />
+								</p:commandLink>
+							</p:column>
+						</p:dataTable>
+
+					</p:column>
+				</p:dataTable>
+
+				<!--  Início dialog do histórico -->
+
+				<p:dialog header="Acompanhamento da Determinação" id="dlgHistorico"
+					widgetVar="dlgHistorico" resizable="true" style="align:center;">
+					<h:form id="formDialogDeliberacao" enctype="multipart/form-data">
+
+						<p:fieldset legend="Histórico" style="margin-bottom:20px;">
+							<p:dataTable id="deliberacaoList"
+								value="#{determinacaoBean.listAcompanhamentoDeliberacao}"
+								var="ad" emptyMessage="sem deliberações" rowIndexVar="row"
+								style="width:650px; height:250px; overflow-y:scroll; overflow-x:none; ">
+
+								<p:column headerText="Informação">
+									<h:outputText value="#{ad.dscResposta}" />
+								</p:column>
+								<p:column headerText="Responsável" width="80">
+									<h:outputText value="#{ad.tipoEnvioAcompanhamento}" />
+								</p:column>
+
+
+								<p:column headerText="Arquivos">
+									<p:dataTable id="arquivosList"
+										value="#{ad.documentoAcompanhamento}" var="arquivo"
+										rendered="#{ad.documentoAcompanhamento.size() > 0}"
+										style="margin-bottom: 5px;">
+										<p:column>
+											<p:commandLink action="#{determinacaoBean.recuperarArquivo}">
+											<f:setPropertyActionListener
+												target="#{determinacaoBean.documentoSelecionado}"
+												value="#{arquivo}" />
+												<h:outputText value="#{arquivo.dscUrlArquivo}" />
+											</p:commandLink>
+										</p:column>
+									</p:dataTable>
+									<div align="right">
+										<p:commandButton rendered="#{determinacaoBean.credencialSession.perfil == 'Tribunal'}" value="Novo" styleClass="botaoNovo"
+											onclick="mostraUpload()">
+											<f:setPropertyActionListener
+												target="#{determinacaoBean.acompanhamentoDeliberacaoSelecionado}"
+												value="#{ad}" />
+										</p:commandButton>
+									</div>
+								</p:column>
+
+							</p:dataTable>
+
+						</p:fieldset>
+						<p:fieldset widgetVar="telaNovoRegistro" id="telaNovoRegistro"
+							legend="Novo Registro" styleClass="formNovoRegistro"
+							style="margin-bottom:20px">
+							<h:panelGrid columns="2" style="margin-bottom:10px;" id="formDel">
+
+
+								<h:outputLabel for="numDiasPrazoNovo" value="Novo Prazo (dias)"
+									rendered="#{determinacaoBean.credencialSession.perfil != 'Tribunal'}" />
+								<p:inputText id="numDiasPrazoNovo"
+									value="#{determinacaoBean.novoAcompanhamentoDeliberacao.numDiasPrazo}"
+									rendered="#{determinacaoBean.credencialSession.perfil != 'Tribunal'}" />
+
+
+								<h:outputLabel for="dscDeliberacao" value="Texto" />
+								<p:editor id="dscResposta"
+									value="#{determinacaoBean.novoAcompanhamentoDeliberacao.dscResposta}"
+									style="width:530px;" height="100" />
+
+							</h:panelGrid>
+							<div align="center">
+								<span> <p:commandButton id="submitButtonDeliberacao"
+										value="Salvar" process=":form:formDialogDeliberacao"
+										update="deliberacaoList numDiasPrazoNovo dscResposta"
+										action="#{determinacaoBean.salvarAcompanhamentoDeliberacao}" />
+										 <p:commandButton id="finalizarDeliberacao"
+										value="Determinação Resolvida" process="@this" rendered="#{determinacaoBean.credencialSession.perfil != 'Tribunal'}"
+										action="#{determinacaoBean.finalizarDeterminacao}" />
+										 <p:commandButton id="fecharDeliberacao" onclick="mostraFechaDeterminacao()"
+										value="Fechar Resolvida" process="@this" rendered="#{determinacaoBean.credencialSession.perfil != 'Tribunal'}" />
+										
+								</span>
+							</div>
+						</p:fieldset>
+
+
+						<p:fieldset legend="Novo Arquivo" style="margin-bottom:20px;"
+							styleClass="formFechaDeterminacao" widgetVar="formFechaDeterminacao">
+							<h:panelGrid columns="2" style="margin-bottom:10px;"
+								id="formUpload">
+
+								<p:inputText id="numProcedimento"
+									value="#{determinacaoBean.deliberacaoSelecionada.numProcedimento}" />
+									
+								<p:commandButton id="submitButtonFechaDeliberacao"
+										value="Salvar"
+										action="#{determinacaoBean.fecharDeterminacao}" />
+									
+									
+
+							</h:panelGrid>
+						</p:fieldset>
+
+
+						<script>
+						window.onload = function() {
+							$(".formFechaDeterminacao").hide();
+						}
+					
+						function mostraFechaDeterminacao(){
+							$(".formFechaDeterminacao").show();
+							$(".formNovoRegistro").hide();
+						}
+					
+						function escondeFechaDeterminacao(){
+							$(".formNovoRegistro").show();
+							$(".formFechaDeterminacao").hide();
+						}
+						</script>
+					</h:form>
+				</p:dialog>
+
+				<!--  Fim dialog do histórico -->
+
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>

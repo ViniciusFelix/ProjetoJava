@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/template/default.xhtml">
+
+	<ui:define name="content">
+
+		<f:view>
+			<h:form id="tipoDeliberacao">
+				<p:panel id="panel"
+					header="Cadastro de tipo de deliberacao">
+
+					<h:panelGrid columns="2">
+						<h:outputText
+							value="Descrição" />
+						<p:inputText
+							value="#{tipoDeliberacaoBean.tipoDeliberacao.dscTipoDeliberacao}"
+							required="true" label="Descrição" style="width: 400px;"/>
+						
+					</h:panelGrid>
+					
+					<br />
+					<div align="center">
+						<p:commandButton
+							action="#{tipoDeliberacaoBean.cadastarTipoDeliberacao}"
+							value="Cadastrar" icon="ui-icon-check"/>
+						<p:commandButton
+							action="#{tipoDeliberacaoBean.redirecionarPaginaListar}"
+							value="Cancelar" icon="ui-icon-close" immediate="true"/>
+					</div>
+				</p:panel>
+				
+			</h:form>
+
+		</f:view>
+
+	</ui:define>
+
+</ui:composition>

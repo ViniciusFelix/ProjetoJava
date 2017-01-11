@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subreport_respostas" pageWidth="555" pageHeight="802" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a6121f7f-34e2-4c23-81c3-11a9a91dbeca">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="inspecao_orgao" class="java.lang.Integer"/>
+	<parameter name="tpReposta" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Desenvolvimento\\saci\\src\\main\\webapp\\relatorio\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="dscResposta" class="java.lang.String"/>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="inspecaoOrgao.id" class="java.lang.Integer"/>
+	<field name="complementoResposta" class="java.util.List"/>
+	<field name="deliberacao" class="java.util.List"/>
+	<filterExpression><![CDATA[$F{inspecaoOrgao.id} == $P{inspecao_orgao}]]></filterExpression>
+	<detail>
+		<band height="65" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="555" height="20" uuid="56523143-4aa1-45a7-8d81-446fa00a0815"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{dscResposta}.toString().length() != 0) ? $F{dscResposta} : "A pergunta não foi respondida"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="24" width="73" height="19" isRemoveLineWhenBlank="true" uuid="ac669e2d-0c7e-4aa5-9010-c441b802ec1f">
+					<printWhenExpression><![CDATA[new Boolean($F{complementoResposta}.size()>0)]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Complemento:]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="83" y="24" width="472" height="19" isRemoveLineWhenBlank="true" uuid="7db3a950-b282-4a09-aa50-c7e158efb146">
+					<printWhenExpression><![CDATA[new Boolean($F{complementoResposta}.size()>0)]]></printWhenExpression>
+				</reportElement>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{complementoResposta})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["subreport_complemento.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="10" y="45" width="73" height="20" isRemoveLineWhenBlank="true" uuid="7e9c5d6b-a8de-408b-9102-01f8b359418e">
+					<printWhenExpression><![CDATA[new Boolean($F{deliberacao}.size()>0)]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Deliberacao:]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="83" y="45" width="472" height="20" isRemoveLineWhenBlank="true" uuid="9785e1f6-f524-4f55-88d4-7c9cd50b2088">
+					<printWhenExpression><![CDATA[new Boolean($F{deliberacao}.size()>0)]]></printWhenExpression>
+				</reportElement>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{deliberacao})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["subreport_deliberacao.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

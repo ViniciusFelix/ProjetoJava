@@ -1,0 +1,368 @@
+<!DOCTYPE ui:composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/default.xhtml">
+	<ui:define name="head">
+	</ui:define>
+	<ui:define name="content">
+			<style type="text/css">
+			.active { display:inherit; }
+			ul#map {display: block; margin: 0; padding: 0; width: 570px; height: 585px; background-image: url('../../images/map.gif');}
+			ul#map li {display: block; padding: 0; position: absolute;}
+			li#crs {margin-top: 485px; margin-left: 237px; }
+			li#csc {margin-top: 467px; margin-left: 292px;}
+			li#cpr {margin-top: 416px; margin-left: 281px;}
+			li#csp {margin-top: 375px; margin-left: 303px; z-index:9999; }
+			li#cms {margin-top: 336px; margin-left: 229px;}
+			li#crj {margin-top: 390px; margin-left: 422px; z-index:9999; }
+			li#ces {margin-top: 347px; margin-left: 467px; z-index:9999; }
+			li#cmg {margin-top: 292px; margin-left: 333px; z-index:9998; }
+			li#cgo {margin-top: 264px; margin-left: 301px; z-index:9999; }
+			li#cdf {margin-top: 311px; margin-left: 373px; z-index:9999; }
+			li#cba {margin-top: 207px; margin-left: 397px;}
+			li#cmt {margin-top: 189px; margin-left: 180px;}
+			li#cro {margin-top: 199px; margin-left: 104px; z-index:9998; }
+			li#cac {margin-top: 185px; margin-left: 0px;}
+			li#cam {margin-top: 46px; margin-left: 3px;}
+			li#crr {margin-top: 0; margin-left: 133px;}
+			li#cpa {margin-top: 40px; margin-left: 219px;}
+			li#cap {margin-top: 13px; margin-left: 278px;}
+			li#cma {margin-top: 94px; margin-left: 366px; z-index:9999;}
+			li#cto {margin-top: 156px; margin-left: 338px;}
+
+			li#cse {margin-top: 221px; margin-left: 519px; z-index:9998;}
+			li#cal {margin-top: 211px; margin-left: 518px; z-index:9999;}
+			li#cpe {margin-top: 188px; margin-left: 473px;}
+			li#cpb {margin-top: 169px; margin-left: 511px; z-index:9999;}
+			li#crn {margin-top: 151px; margin-left: 514px;}
+			li#cce {margin-top: 121px; margin-left: 473px;}
+			li#cpi {margin-top: 120px; margin-left: 406px; z-index:9997;}
+
+			ul#map li a {display: block; text-decoration: none; position: absolute;}
+			#crs a {width: 116px; height: 101px; }
+			#csc a {width: 81px; height: 53px; }
+			#cpr a {width: 97px; height: 64px; }
+			#csp a {width: 131px; height: 84px; }
+			#cms a {width: 106px; height: 104px; }
+			#crj a {width: 58px; height: 40px; }
+			#ces a {width: 33px; height: 51px; }
+			#cmg a {width: 163px; height: 131px; }
+			#cgo a {width: 108px; height: 108px; }
+			#cdf a {width: 16px; height: 9px; }
+			#cba a {width: 136px; height: 148px; }
+			#cmt a {width: 166px; height: 161px; }
+			#cro a {width: 104px; height: 87px; }
+			#cac a {width: 108px; height: 62px; }
+			#cam a {width: 258px; height: 181px;}
+			#crr a {width: 87px; height: 103px; }
+			#cpa a {width: 188px; height: 187px; }
+			#cap a {width: 73px; height: 85px; }
+			#cma a {width: 102px; height: 139px; }
+			#cto a {width: 74px; height: 125px; }
+			#cse a {width: 28px; height: 32px; }
+			#cal a {width: 46px; height: 27px; }
+			#cpe a {width: 97px; height: 34px; }
+			#cpb a {width: 59px; height: 35px; }
+			#crn a {width: 53px; height: 33px; }
+			#cce a {width: 61px; height: 76px; }
+			#cpi a {width: 83px; height: 124px;}
+
+			/* Código pronto via http://css.spritegen.com (com alterações nos seletores) */
+
+			#cpa a:hover, #cpa a:active, #cam a:hover, #cam a:active, #cmt a:hover, #cmt a:active, #cba a:hover, #cba a:active, #cma a:hover, #cma a:active,
+			#cmg a:hover, #cmg a:active, #cto a:hover, #cto a:active, #cpi a:hover, #cpi a:active, #cgo a:hover, #cgo a:active, #cms a:hover, #cms a:active,
+			#crr a:hover, #crr a:active, #crs a:hover, #crs a:active, #cro a:hover, #cro a:active, #cap a:hover, #cap a:active, #csp a:hover, #csp a:active,
+			#cce a:hover, #cce a:active, #cpr a:hover, #cpr a:active, #cac a:hover, #cac a:active, #csc a:hover, #csc a:active, #ces a:hover, #ces a:active,
+			#crj a:hover, #crj a:active, #cpb a:hover, #cpb a:active, #cpe a:hover, #cpe a:active, #crn a:hover, #crn a:active, #cse a:hover, #cse a:active,
+			#cal a:hover, #cal a:active, #cdf a:hover, #cdf a:active
+			{ display: block; background: url('../../images/sprite.gif') no-repeat; }
+
+			#cpa a:hover, #cpa a:active { background-position: -10px -0px; width: 188px; height: 187px; }
+			#cam a:hover, #cam a:active { background-position: -10px -197px; width: 258px; height: 181px; }
+			#cmt a:hover, #cmt a:active { background-position: -10px -388px; width: 166px; height: 161px; }
+			#cba a:hover, #cba a:active { background-position: -10px -559px; width: 136px; height: 148px; }
+			#cma a:hover, #cma a:active { background-position: -156px -559px; width: 102px; height: 139px; }
+			#cmg a:hover, #cmg a:active { background-position: -10px -717px; width: 163px; height: 131px; }
+			#cto a:hover, #cto a:active { background-position: -183px -717px; width: 74px; height: 125px; }
+			#cpi a:hover, #cpi a:active { background-position: -10px -858px; width: 83px; height: 124px; }
+			#cgo a:hover, #cgo a:active { background-position: -103px -858px; width: 108px; height: 108px; }
+			#cms a:hover, #cms a:active { background-position: -103px -976px; width: 106px; height: 104px; }
+			#crr a:hover, #crr a:active { background-position: -10px -992px; width: 87px; height: 103px; }
+			#crs a:hover, #crs a:active { background-position: -107px -1090px; width: 116px; height: 101px; }
+			#cro a:hover, #cro a:active { background-position: -10px -1201px; width: 104px; height: 87px; }
+			#cap a:hover, #cap a:active { background-position: -10px -1105px; width: 73px; height: 85px; }
+			#csp a:hover, #csp a:active { background-position: -124px -1201px; width: 131px; height: 84px; }
+			#cce a:hover, #cce a:active { background-position: -186px -388px; width: 61px; height: 76px; }
+			#cpr a:hover, #cpr a:active { background-position: -124px -1295px; width: 97px; height: 64px; }
+			#cac a:hover, #cac a:active { background-position: -10px -1298px; width: 108px; height: 62px; }
+			#csc a:hover, #csc a:active { background-position: -128px -1369px; width: 81px; height: 53px; }
+			#ces a:hover, #ces a:active { background-position: -208px -0px; width: 33px; height: 51px; }
+			#crj a:hover, #crj a:active { background-position: -186px -474px; width: 58px; height: 40px; }
+			#cpb a:hover, #cpb a:active { background-position: -10px -1370px; width: 59px; height: 35px; }
+			#cpe a:hover, #cpe a:active { background-position: -10px -1415px; width: 97px; height: 34px; }
+			#crn a:hover, #crn a:active { background-position: -186px -524px; width: 53px; height: 33px; }
+			#cse a:hover, #cse a:active { background-position: -208px -61px; width: 28px; height: 32px; }
+			#cal a:hover, #cal a:active { background-position: -208px -103px; width: 46px; height: 27px; }
+			#cdf a:hover, #cdf a:active { background-position: -208px -140px; width: 16px; height: 9px; }
+
+			/* Fim sprite */
+
+			ul#map li a img {border: 0; width: inherit; height: inherit;}
+		</style>
+		<f:view>
+			<h:form>
+			
+			<p:growl id="growl" life="2000" />
+				<ul id="map">
+				<li id="crs">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="30" />
+					<h:outputText value="TJRS" style="font-weight: bold; color: #fff; left:48px;position: absolute; bottom:55px;" />  
+						<img src="../../images/null.gif" alt="RS" />
+					</h:commandLink>	        
+				</li>
+				<li id="csc">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="31" />
+						<img src="../../images/null.gif" alt="SC" />
+					<h:outputText value="TJSC" style="font-weight: bold; color: #fff; left:37px;position: absolute; bottom:23px;" /> 
+					</h:commandLink>
+				</li>
+				<li id="cpr">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="25" />
+							<img src="../../images/null.gif" alt="PR" />
+					<h:outputText value="TJPR" style="font-weight: bold; color: #fff; left:24px;position: absolute; bottom:23px;" /> 
+					</h:commandLink>
+				</li>
+				<li id="csp">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="33" />
+							<img src="../../images/null.gif" alt="SP" />
+					<h:outputText value="TJSP" style="font-weight: bold; color: #fff; left:45px;position: absolute; bottom:38px;" /> 
+					</h:commandLink>
+				</li>
+				<li id="cms">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="19" />
+							<img src="../../images/null.gif" alt="RS" />
+					<h:outputText value="TJMS" style="font-weight: bold; color: #fff; left:30px;position: absolute; bottom:43px;" /> 
+					</h:commandLink>
+				</li>
+				<li id="crj">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="26" />
+							<img src="../../images/null.gif" alt="RJ" />
+					<h:outputText value="TJRJ" style="font-weight: bold; color: #000; left:47px;position: absolute; bottom:0px;" /> 
+					</h:commandLink>
+				</li>
+				<li id="ces">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="15" />
+							<img src="../../images/null.gif" alt="ES" />
+					<h:outputText value="TJES" style="font-weight: bold; color: #000; left:26px;position: absolute; bottom:6px;" /> 
+					</h:commandLink>
+				</li>
+				<li id="cmg">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="18" />
+							<img src="../../images/null.gif" alt="MG" />
+					<h:outputText value="TJMG" style="font-weight: bold; color: #fff; left:80px;position: absolute; bottom:52px;" />
+					</h:commandLink>
+				</li>
+				<li id="cgo">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="16" />
+							<img src="../../images/null.gif" alt="GO" />
+					<h:outputText value="TJGO" style="font-weight: bold; color: #fff; left:28px;position: absolute; bottom:30px;" />
+					</h:commandLink>
+				</li>
+				<li id="cdf">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="14" />
+							<img src="../../images/null.gif" alt="DF" />
+					<h:outputText value="TJDFT" style="font-weight: bold; color: #fff; left:0px;position: absolute; bottom:-4px;" />
+					</h:commandLink>
+				</li>
+				<li id="cba">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="12" />
+							<img src="../../images/null.gif" alt="BA" />
+					<h:outputText value="TJBA" style="font-weight: bold; color: #fff; left:56px;position: absolute; bottom:78px;" />
+					</h:commandLink>
+				</li>
+				<li id="cmt">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="20" />
+							<img src="../../images/null.gif" alt="MT" />
+					<h:outputText value="TJMT" style="font-weight: bold; color: #fff; left:70px;position: absolute; bottom:68px;" />
+					</h:commandLink>
+				</li>
+				<li id="cro">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="28" />
+							<img src="../../images/null.gif" alt="RO" />
+					<h:outputText value="TJRO" style="font-weight: bold; color: #fff; left:35px;position: absolute; bottom:30px;" />
+					</h:commandLink>
+				</li>
+				<li id="cac">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="8" />
+							<img src="../../images/null.gif" alt="AC" />
+					<h:outputText value="TJAC" style="font-weight: bold; color: #fff; left:35px;position: absolute; bottom:20px;" />
+					</h:commandLink>
+				</li>
+				<li id="cam">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="10" />
+							<img src="../../images/null.gif" alt="AM" />
+					<h:outputText value="TJAM" style="font-weight: bold; color: #fff; left:130px;position: absolute; bottom:74px;" />
+					</h:commandLink>
+				</li>
+				<li id="crr">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="29" />
+							<img src="../../images/null.gif" alt="RR" />
+					<h:outputText value="TJRR" style="font-weight: bold; color: #fff; left:32PX;position: absolute; bottom:46px;" />
+					</h:commandLink>
+				</li>
+				<li id="cpa">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="21" />
+							<img src="../../images/null.gif" alt="PA" />
+					<h:outputText value="TJPA" style="font-weight: bold; color: #fff; left:64px;position: absolute; bottom:73px;" />
+					</h:commandLink>
+				</li>
+				<li id="cap">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="11" />
+							<img src="../../images/null.gif" alt="AP" />
+					<h:outputText value="TJAP" style="font-weight: bold; color: #fff; left:24px;position: absolute; bottom:30px;" />
+					</h:commandLink>
+				</li>
+				<li id="cma">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="17" />
+							<img src="../../images/null.gif" alt="MA" />
+					<h:outputText value="TJMA" style="font-weight: bold; color: #fff; left:30px;position: absolute; bottom:70px;" />
+					</h:commandLink>
+				</li>
+				<li id="cto">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="34" />
+							<img src="../../images/null.gif" alt="TO" />
+					<h:outputText value="TJTO" style="font-weight: bold; color: #fff; left:17px;position: absolute; bottom:36px;" />
+					</h:commandLink>
+				</li>
+				<li id="cse">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="32" />
+							<img src="../../images/null.gif" alt="SE" />
+					<h:outputText value="TJSE" style="font-weight: bold; color: #000; left:14px;position: absolute; bottom:-6px;" />
+					</h:commandLink>
+				</li>
+				<li id="cal">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="9" />
+							<img src="../../images/null.gif" alt="AL" />
+					<h:outputText value="TJAL" style="font-weight: bold; color: #000; left:37px;position: absolute; bottom:-1px;" />
+					</h:commandLink>
+				</li>
+				<li id="cpe">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="23" />
+							<img src="../../images/null.gif" alt="PE" />
+					<h:outputText value="TJPE" style="font-weight: bold; color: #000; left:94px;position: absolute; bottom:6px;" />
+					</h:commandLink>
+				</li>
+				<li id="cpb">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="22" />
+							<img src="../../images/null.gif" alt="PB" />
+					<h:outputText value="TJPB" style="font-weight: bold; color: #000; left:57px;position: absolute; bottom:9px;" />
+					</h:commandLink>
+				</li>
+				<li id="crn">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="27" />
+							<img src="../../images/null.gif" alt="RN" />
+					<h:outputText value="TJRN" style="font-weight: bold; color: #000; left:44px;position: absolute; bottom:18px;" />
+					</h:commandLink>
+				</li>
+				<li id="cce">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="13" />
+							<img src="../../images/null.gif" alt="CE" />
+					<h:outputText value="TJCE" style="font-weight: bold; color: #fff; left:9px;position: absolute; bottom:33px;" />
+					</h:commandLink>
+				</li>
+				<li id="cpi">
+					<h:commandLink action="#{inspecaoBean.redirecionarListagemEstadual}" update="growl">
+					<f:setPropertyActionListener
+									target="#{inspecaoBean.justicaEstadualSelected}"
+									value="24" />
+							<img src="../../images/null.gif" alt="PI" />
+					<h:outputText value="TJPI" style="font-weight: bold; color: #fff; left:34px;position: absolute; bottom:36px;" />
+					</h:commandLink>
+				</li>
+			</ul>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>

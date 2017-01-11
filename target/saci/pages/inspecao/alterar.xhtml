@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" template="/template/default.xhtml">
+
+	<ui:define name="content">
+	
+		<f:view>
+			<h:form>
+				<p:panel id="panelAlterar" header="Alterar">
+					<h:panelGrid columns="2" columnClasses="columnNome, columnSelect">
+					
+						<h:outputText 
+							value="#{messages['inspecao.tipoInspecao']}" />
+						<p:selectOneRadio
+							value="#{inspecaoBean.inspecao.tipoInspecao}" label="Tipo" required="true" disabled="true">
+							<f:selectItem itemLabel="Correição" itemValue="C" />  
+	           				<f:selectItem itemLabel="Inspeção" itemValue="I" /> 
+						</p:selectOneRadio>
+						
+						<h:outputText 
+							value="Número" />
+						<p:inputText value="#{inspecaoBean.inspecao.numInspecao}/#{inspecaoBean.inspecao.numAnoInspecao}" disabled="true" />
+	
+						<h:outputText
+							value="#{messages['inspecao.tipoObjeto']}"/>
+						<p:selectManyCheckbox
+							converter="#{tipoObjetoAplicacaoConverter}"
+							id="lineDirection"
+							value="#{inspecaoBean.tipoObjetoAplicacaoListSelected}"
+							label="Tipo de Objeto">
+ 							<f:selectItems 
+								value="#{tipoObjetoAplicacaoBean.all}"
+								var="tipoObjetoAplicacao"
+								itemLabel="#{tipoObjetoAplicacao.dscTipoObjetoAplicacao}"
+								itemValue="#{tipoObjetoAplicacao}"
+								>
+							</f:selectItems>
+							<p:ajax event="change" listener="#{inspecaoBean.buscaTipoAta}" update="lineDirectionAta" />
+						</p:selectManyCheckbox>
+				
+					</h:panelGrid>
+				</p:panel>
+				<p:panel id="panelDadosInspecao" header="Dados da inspeção" style="">
+					<table>
+						<tr>
+							<td>
+								<h:outputText value="Portaria" /> 
+							</td>
+							<td>
+								<p:inputMask
+									value="#{inspecaoBean.inspecao.numPortaria}"
+									required="true" label="Portaria" mask="999/9999" />
+							</td>
+							<td>
+								<h:outputText value="Nº Processo" /> 
+							</td>
+							<td colspan="3">
+								<p:inputMask
+									value="#{inspecaoBean.inspecao.numProcessoPje}"
+									required="true" label="Portaria" mask="9999999-99.9999.9.99.9999" style="width:200px"/>
+							</td>
+						</tr>
+					</table>
+					<table>
+						<tr>
+							<td>
+								<h:outputText value="Período" />
+							</td>
+							<td>
+								<p:calendar locale="pt_BR" id="inicio"
+									value="#{inspecaoBean.inspecao.datInicioInspecao}"
+									required="true" label="Data de início da inspeção">
+								</p:calendar>
+							</td>
+							<td>
+								<h:outputText value="até" />
+							</td>
+							<td>
+								<p:calendar locale="pt_BR" id="fim"
+									value="#{inspecaoBean.inspecao.datFinalInspecao}"
+									required="true" label="Data final da inspeção">
+								</p:calendar>
+							</td>
+						</tr>
+					</table>
+					
+					<p:tabView id="abas" activeIndex="#{inspecaoBean.activeTabIndex}">  
+					
+						<p:tab id="judicial" title="Órgãos judiciais" >
+						
+						    <h:panelGrid columns="2">
+						    	<h:outputText value="Esfera judiciária" /> 						        
+							        <p:selectOneMenu id="esfera" value="#{inspecaoBean.esfera.id}">  
+								        <f:selectItem itemLabel="Escolha uma esfera" itemValue="" />
+								        <f:selectItem itemLabel="Justiça estadual" itemValue="TRIBE" /> 
+								        <f:selectItem itemLabel="Justiça federal" itemValue="TRIBF" /> 
+								        <f:selectItem itemLabel="Justiça eleitoral" itemValue="TRIBL" /> 
+								        <f:selectItem itemLabel="Justiça trabalhista" itemValue="TRIBT" />
+								        <f:selectItem itemLabel="Justiça militar" itemValue="TRIBM" />   
+								        <p:ajax update="tribunais,circunscricoes,unidades"
+	                         					listener="#{inspecaoBean.allByEsfera}" />
+						        </p:selectOneMenu>
+						        
+						        <h:outputText value="Tribunais" />
+							        <p:selectOneMenu id="tribunais" value="#{inspecaoBean.tribunal}" converter="#{corporativoOrgaoConverter}" style="width: 400px">  
+							            <f:selectItem itemLabel="Selecione o tribunal" />
+							            <f:selectItems value="#{inspecaoBean.tribunais}"
+											var="tribunais"
+											itemLabel="#{tribunais.descrica}" itemValue="#{tribunais}" /> 
+										<p:ajax update="circunscricoes,unidades"
+	                         					listener="#{inspecaoBean.allByTribunal}" />
+									</p:selectOneMenu>
+									
+							</h:panelGrid>
+							
+							<h:panelGrid>
+							
+								<h:outputText value="Circunscrições" />
+								<p:pickList id="circunscricoes" value="#{inspecaoBean.circunscricoes}"
+					        		var="circunscricoesList"
+					                itemLabel="#{(circunscricoesList.ordemOrgao != 0) ? circunscricoesList.ordemOrgao : ''}#{circunscricoesList.descrica}"
+									itemValue="#{circunscricoesList.id}" 
+									showSourceFilter="true" filterMatchMode="contains">
+
+									<p:ajax event="transfer" listener="#{inspecaoBean.preencheUnidades}" update="unidades" />  
+								</p:pickList>
+
+							</h:panelGrid>
+							
+							<h:panelGrid>
+							
+								<h:outputText value="Unidades" />
+								<p:pickList id="unidades" value="#{inspecaoBean.unidades}" converter="#{corporativoOrgaoConverter}"
+					        		var="unidadesList"
+					                itemLabel="#{(unidadesList.ordemOrgao != 0) ? unidadesList.ordemOrgao : ''}#{unidadesList.descrica}"
+									itemValue="#{unidadesList.id}"
+									showSourceFilter="true" filterMatchMode="contains" >
+								</p:pickList>
+
+							</h:panelGrid>
+					    </p:tab>  
+					
+					    <p:tab id="extrajudicial" title="Órgãos extrajudiciais">  
+					        <h:panelGrid columns="2">
+						        <h:outputText value="Estado" /> 						        
+						        <p:selectOneMenu id="uf" value="#{inspecaoBean.uf.uf}">  
+						            <f:selectItem itemLabel="Escolha um estado" itemValue="" />  
+					            	<f:selectItems value="#{inspecaoBean.allEstados}"
+										var="estados"
+										itemLabel="#{estados.uf}"
+										itemValue="#{estados.uf}" />
+										<p:ajax update="cidades,listaCartorios"
+                         					listener="#{inspecaoBean.allByUF}" />
+					            </p:selectOneMenu>
+						   </h:panelGrid>     
+						   
+						   <h:panelGrid >
+						        <h:outputText value="Cidade" />
+						        <p:pickList id="cidades" value="#{inspecaoBean.cidades}"
+						        		var="cidadeList"
+						                itemLabel="#{cidadeList.dscCidade}"
+										itemValue="#{cidadeList.id}" 
+										showSourceFilter="true" filterMatchMode="contains" >
+										<p:ajax event="transfer" listener="#{inspecaoBean.preencheCartorio}" update="listaCartorios" />  
+								</p:pickList> 
+					       </h:panelGrid>
+					        
+					        <h:panelGrid columns="1">
+					        	<h:outputText value="Cartórios" />
+						        <p:pickList id="listaCartorios" value="#{inspecaoBean.cartorios}" var="cartorios"
+						                itemLabel="#{cartorios.denominacaoCartorio}" 
+						                itemValue="#{cartorios.id}" 
+										showSourceFilter="true" filterMatchMode="contains"/> 
+						    </h:panelGrid>
+					        
+					    </p:tab>
+					</p:tabView> 
+					
+					<br></br>
+					
+					<h:panelGrid columns="2">
+			        	<h:outputText value="Sub-unidade" /> 
+			        	<p:inputText
+							value="#{inspecaoBean.subUnidadeOrgao.dscSubunidade}" maxlength="255"
+							label="sub-unidade"/>
+			        </h:panelGrid>
+
+				</p:panel>
+				<p:panel id="panelVincularAta" header="Vincular ata" style="">
+					<h:panelGrid columns="2" id="panelGrid">
+						<h:outputText value="Unidades" /> 
+						<p:selectManyCheckbox 
+					 		id="lineDirectionUnidade"
+							value="#{inspecaoBean.unidadesAtas.unidades}"
+							layout="grid"
+							columns="5"
+							required="false"
+							converter="#{corporativoOrgaoConverter}">
+							<f:selectItems 
+								value="#{inspecaoBean.unidadesSelectedList}"
+								var="unidade"
+								itemLabel="#{unidade.descrica}"
+								itemValue="#{unidade}">
+							</f:selectItems>
+						</p:selectManyCheckbox>
+						<h:outputText value="Tipos de ata" /> 
+						<p:selectManyCheckbox 
+					 		id="lineDirectionAta"
+							value="#{inspecaoBean.unidadesAtas.atas}"
+							layout="grid"
+							columns="5"
+							required="false"
+							converter="#{tipoAplicacaoPerguntaConverter}">
+							<f:selectItems 
+								value="#{inspecaoBean.tipoAplicacaoPerguntaList}"
+								var="tipoAplicacaoPergunta"
+								itemLabel="#{tipoAplicacaoPergunta.dscTipoAplicacao}"
+								itemValue="#{tipoAplicacaoPergunta}">
+							</f:selectItems>
+						</p:selectManyCheckbox>
+						<p:commandButton id="btn_add" value="Inserir" update="panelAtasVinculadas @parent"  
+		                        action="#{inspecaoBean.reinit}" process="panelVincularAta">  
+			            <p:collector value="#{inspecaoBean.unidadesAtas}" 
+			            			addTo="#{inspecaoBean.unidadesAtasList}"/>   
+			            </p:commandButton>
+					</h:panelGrid>
+				</p:panel>
+				<p:panel id="panelAtasVinculadas" header="Atas vinculadas" style="">
+					<p:dataTable id="atasVinculadas" value="#{inspecaoBean.unidadesAtasList}" var="ata" emptyMessage="Sem atas vinculadas">
+						<p:column headerText="Unidades">
+							<h:outputText value="#{ata.unidades.toString()}" />
+						</p:column>
+						<p:column headerText="Tipos de ata">
+							<h:outputText value="#{ata.atas.toString()}" />
+						</p:column>
+						<p:column headerText="Ação">  
+			                <p:commandLink value="Remover" onclick="confirmationQuest#{atas.id}.show()"/>  
+			                <p:confirmDialog  message="Deseja realmente excluir este registo?" closable="false" header="Aviso" severity="alert" widgetVar="confirmationQuest#{atas.id}">  
+						    	<p:commandButton id="btnSim" value="Sim" onclick="confirmationQuest#{atas.id}.hide()" update="atasVinculadas" process="@this" action="#{inspecaoBean.removerAta}">
+						    		<f:setPropertyActionListener
+										target="#{inspecaoBean.atas}"
+										value="#{ata}" />
+						    	</p:commandButton>
+						        <p:commandButton id="btnNao" value="Não" onclick="confirmationQuest#{atas.id}.hide()" type="button"/>  
+							</p:confirmDialog>
+			            </p:column>
+			            
+					</p:dataTable>
+				</p:panel>
+				<p:panel id="panelPalavraChave" header="Palavras-chave" style="">
+					<h:panelGrid>
+						<p:inputTextarea
+							value="#{inspecaoBean.inspecao.dscAssunto}" maxlength="255"
+							label="Palavras-chave" cols="120" />
+					</h:panelGrid>
+				</p:panel>
+				<p:panel id="panelAnexarDocumentos" header="Anexar documentos" style="">
+				
+					<h:panelGrid columns="2" id="formGridAnexarDocumentos">
+						<h:outputText value="Tipo documento" />
+				        <p:selectOneMenu id="tipoDocumento" value="#{inspecaoBean.documento.tipoDocumento}" converter="#{tipoDocumentoConverter}">  
+				            <f:selectItem itemLabel="Selecione o tipo documento" itemValue="" />
+				            <f:selectItems value="#{tipoDocumentoBean.all}"
+								var="tipoDocumento"
+								itemLabel="#{tipoDocumento.dscTipoDocumento}"
+								itemValue="#{tipoDocumento}" />
+						 </p:selectOneMenu>	
+						 
+						 <h:outputLabel value="Descrição " for="txt_title"></h:outputLabel>  
+			             <p:inputText id="txt_title"   
+			             	value="#{inspecaoBean.documento.nomeArquivo}" style="width: 400px"/>  
+						 <h:outputText value="Arquivo" />
+						 <p:fileUpload id="fileupload"
+						 	  fileUploadListener="#{inspecaoBean.handleFileUpload}"
+						 	  auto="true"
+						 	  dragDropSupport="true"
+					 	 	  update="nomeArquivo"
+					 	 	  allowTypes="/(\.|\/)(gif|jpe?g|png|doc|docx|xls|xlsx|pps|ppsx|ppt|pptx|pdf)$/"
+	                          label="Procurar..." cancelLabel="Cancelar"
+	                          fileLimit="1"
+	                          sizeLimit="5242880"
+	                          invalidFileMessage="Formato de arquivo inválido."
+	                          invalidSizeMessage="Tamanho do arquivo inválido (máximo permitido de 5MB)."
+	                          fileLimitMessage="Apenas um arquivo por vez." /> 
+	                          <h:outputText value="Arquivo selecionado" />
+	               			  <h:outputText id="nomeArquivo" value="#{inspecaoBean.documento.urlArquivo}" />
+	               			  
+	               		<f:facet name="footer"> 
+	               			<div align="center">
+								<p:commandButton value="Adicionar" action="#{inspecaoBean.reinit}" update="arquivoSelecionado,formGridAnexarDocumentos @parent" process="formGridAnexarDocumentos">
+		                			<p:collector value="#{inspecaoBean.documento}"   
+		                          		addTo="#{inspecaoBean.inspecao.documentos}" />
+		                		</p:commandButton> 
+		                		<p:commandButton value="Limpar" update="fileupload,nomeArquivo" immediate="true" action="#{inspecaoBean.limpaUrlArquivo}"/>
+                			</div>
+                			<br />
+                			<br />
+                		</f:facet>
+                		
+					</h:panelGrid>
+				
+					<p:dataTable var="documentos" value="#{inspecaoBean.inspecao.documentos}"
+						emptyMessage="Não foram encontrados registros."
+						id="arquivoSelecionado">  
+				        <p:column headerText="Tipo Documento">  
+				            <h:outputText value="#{documentos.tipoDocumento.dscTipoDocumento}" />  
+				        </p:column>  
+				  
+				        <p:column headerText="Descrição">  
+				            <h:outputText value="#{documentos.nomeArquivo}" />  
+				        </p:column>  
+				        
+				        <p:column headerText="URL Arquivo">  
+				            <h:commandLink target="blank" value="#{documentos.urlArquivo}"  action="#{inspecaoBean.recuperarArquivo}">  
+				            	<f:setPropertyActionListener
+										target="#{inspecaoBean.documento}"
+										value="#{documentos}" />
+				            </h:commandLink>
+				        </p:column>  
+
+				        <p:column>  
+			                <f:facet name="header">  
+			                    <h:outputText value="Ação" />  
+			                </f:facet>  
+			                <p:commandLink value="Remover" onclick="confirmationDoc#{documentos.id}.show()"/>
+			                <p:confirmDialog  message="Deseja realmente excluir este registo?" closable="false" header="Aviso" severity="alert" widgetVar="confirmationDoc#{documentos.id}">  
+						    	<p:commandButton id="btnSim" value="Sim" onclick="confirmationDoc#{documentos.id}.hide()" update="arquivoSelecionado" process="@this" action="#{inspecaoBean.removerArquivo}">
+						    		<f:setPropertyActionListener
+										target="#{inspecaoBean.documento}"
+										value="#{documentos}" />
+						    	</p:commandButton>
+						        <p:commandButton id="btnNao" value="Não" onclick="confirmationDoc#{documentos.id}.hide()" type="button"/>  
+							</p:confirmDialog>
+			            </p:column>
+				    </p:dataTable> 
+
+				</p:panel>
+				<br></br>
+				<div align="center">
+					<p:commandButton
+						action="#{inspecaoBean.alterarInspecao}" value="Alterar" icon="ui-icon-check"/>
+				</div>
+				
+			</h:form>
+	
+		</f:view>
+	
+	</ui:define>
+
+</ui:composition>

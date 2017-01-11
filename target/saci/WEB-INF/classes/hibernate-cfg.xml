@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory>
+  <mapping class="br.jus.cnj.saci.entity.ModeloPergunta"/>
+  <mapping class="br.jus.cnj.saci.entity.Pergunta"/>
+  <mapping class="br.jus.cnj.saci.entity.Questionario"/>
+  <mapping class="br.jus.cnj.saci.entity.Resposta"/>
+  <mapping class="br.jus.cnj.saci.entity.TipoAplicacaoPergunta"/>
+  <mapping class="br.jus.cnj.saci.entity.TipoFormatoResposta"/>
+  <mapping class="br.jus.cnj.saci.entity.Inspecao"/>
+  <mapping class="br.jus.cnj.saci.entity.InspecaoOrgao"/>
+  <mapping class="br.jus.cnj.saci.entity.SubUnidadeOrgao"/>
+  <mapping class="br.jus.cnj.saci.entity.TipoObjetoAplicacao"/>
+  <mapping class="br.jus.cnj.saci.entity.TipoDocumento"/>
+  <mapping class="br.jus.cnj.saci.entity.Documento"/>
+  <mapping class="br.jus.cnj.saci.entity.TipoDeliberacao"/>
+  <mapping class="br.jus.cnj.saci.entity.Deliberacao"/>
+  <mapping class="br.jus.cnj.saci.entity.TipoComplementoResposta"/>
+  <mapping class="br.jus.cnj.saci.entity.ComplementoResposta"/>
+  <mapping class="br.jus.cnj.saci.entity.BoasPraticas"/>
+  <mapping class="br.jus.cnj.saci.entity.PerguntaAutorizadaOrgao"/>
+
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoCidade"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoEstado"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoOrgao"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoOrgaoExterno"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoSistema"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoPerfil"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoTipoCargo"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoTipoOrgao"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoUsuario"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoUsuarioSistemaPerfil"/>
+  <mapping class="br.jus.cnj.corporativo.bean.CorporativoUsuarioSistemaPerfilPK"/>
+  
+  <mapping class="br.jus.cnj.corregedoria.entity.Cartorio"/>
+  <mapping class="br.jus.cnj.corregedoria.entity.Cidade"/>
+ </session-factory>
+</hibernate-configuration>

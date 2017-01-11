@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/default.xhtml">
+	<ui:define name="head">
+	</ui:define>
+	<ui:define name="content">
+		<f:view>
+			<h:form prependId="false">
+				<p:panel visible="true" closable="false" toggleable="false" header="Selecione o Tipo de Ata">
+					<h:panelGrid columns="2">
+						<h:outputLabel
+							value="#{messages['modeloPergunta.tipoAplicacaoPergunta.descricao']}" /> 
+						<p:selectOneMenu
+							value="#{modeloPerguntaBean.modeloPergunta.tipoAplicacaoPergunta}" converter="#{tipoAplicacaoPerguntaConverter}"
+							onchange="PF('panelwv').show();">
+							<f:selectItem itemLabel="Selecione ..." itemValue="" />
+							<f:selectItems value="#{tipoAplicacaoPerguntaBean.all}"
+								var="tipoAplicacaoPergunta"
+								itemLabel="#{tipoAplicacaoPergunta.dscTipoAplicacao}"
+								itemValue="#{tipoAplicacaoPergunta}" />
+	
+							<p:ajax event="change" update="idCode" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<div align="center">
+						<p:commandButton
+								action="#{modeloPerguntaBean.redirecionarPaginaCadastro}"
+								value="Novo modelo de pergunta" icon="ui-icon-plus"/>
+					</div>
+				</p:panel>
+				<br />		
+				<p:panel widgetVar="panelwv" visible="#{ (modeloPerguntaBean.modeloPergunta.tipoAplicacaoPergunta.id != 0) ? true : false}" closable="true"
+					toggleable="true" header="Lista de Modelos de Pergunta">
+						<p:panel widgetVar="aviso" visible="true" style="background-color:#d9edf7; border: 1px solid #bce8f1; color: #3a87ad;">
+							<b>Atenção!</b> Para alterar a ordem de uma linha, basta clicar, arrastar e soltá-la no local desejado.
+						</p:panel>
+					<br />
+					<p:dataTable draggableRows="true"
+						value="#{modeloPerguntaBean.allByTipoAplicacaoPergunta}"
+						var="modeloPergunta" paginator="false"
+						id="idCode"
+						emptyMessage="Não foram encontrados registros.">
+	   		        	<p:ajax listener="#{modeloPerguntaBean.reordenarLinha}" event="rowReorder" update="@parent" />
+						<p:column style="width:50%">
+							<f:facet name="header">
+								<h:outputText value="Descrição" />
+							</f:facet>
+							<h:outputText value="#{modeloPergunta.descricao}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText
+									value="#{messages['modeloPergunta.tipoAplicacaoPergunta.descricao']}" />
+							</f:facet>
+							<h:outputText
+								value="#{modeloPergunta.tipoAplicacaoPergunta.dscTipoAplicacao}" />
+						</p:column>
+
+						<p:column style="width:15%">
+							<f:facet name="header">
+								<h:outputText
+									value="#{messages['modeloPergunta.tipoFormatoResposta.descricao']}" />
+							</f:facet>
+							<h:outputText
+								value="#{modeloPergunta.tipoFormatoResposta.dscTipoResposta}" />
+						</p:column>
+
+						<p:column style="width:11%;" >
+							<f:facet name="header">
+								<h:outputText value="Ação" />
+							</f:facet>
+							
+							<h:commandLink
+								action="#{modeloPerguntaBean.redirecionarPaginaAlterar}">
+								<f:setPropertyActionListener
+									target="#{modeloPerguntaBean.modeloPergunta}"
+									value="#{modeloPergunta}" />
+								<h:graphicImage value="/images/icone_editar.png" width="25px" height="25px" title="Alterar pergunta" alt="Alterar pergunta"/>
+							</h:commandLink>
+							
+							<p:commandLink onclick="PF('confirmation#{modeloPergunta.id}').show()">
+								<h:graphicImage value="/images/icone_excluir.png" width="20px" height="20px" title="Excluir pergunta" alt="Excluir pergunta"/>
+							</p:commandLink>
+							<p:confirmDialog
+								message="Deseja realmente excluir este registro?"
+								header="Excluir registro" severity="alert"
+								widgetVar="confirmation#{modeloPergunta.id}">
+
+								<p:commandButton
+									action="#{modeloPerguntaBean.excluirModeloPergunta}"
+									value="Sim">
+									<f:setPropertyActionListener
+										target="#{modeloPerguntaBean.modeloPergunta}"
+										value="#{modeloPergunta}" />
+								</p:commandButton>
+
+								<p:commandButton value="Não"
+									onclick="PF('confirmation#{modeloPergunta.id}')hide()"
+									type="button" />
+							</p:confirmDialog>
+							
+							<h:commandLink action="#{modeloPerguntaBean.moverParaCima}">
+								<f:setPropertyActionListener
+									target="#{modeloPerguntaBean.modeloPergunta}"
+									value="#{modeloPergunta}" />
+								<h:graphicImage value="/images/icone_up.png" title="Mover pergunta para cima" alt="Mover pergunta para cima"/>
+							</h:commandLink>
+
+							<h:commandLink action="#{modeloPerguntaBean.moverParaBaixo}">
+								<f:setPropertyActionListener
+									target="#{modeloPerguntaBean.modeloPergunta}"
+									value="#{modeloPergunta}" />
+								<h:graphicImage value="/images/icone_down.png" title="Mover pergunta para baixo" alt="Mover pergunta para baixo"/>
+							</h:commandLink>
+							
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+

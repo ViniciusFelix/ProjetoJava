@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/template/default.xhtml">
+
+	<ui:define name="content">
+		<f:view>
+			<h:form>
+				<p:panel id="panel" header="#{messages['modeloPergunta.legend']}">
+	
+					<h:panelGrid columns="2">
+
+						<h:outputText 
+							value="#{messages['modeloPergunta.tipoAplicacaoPergunta.descricao']}" />
+						<p:selectOneMenu
+							value="#{modeloPerguntaBean.modeloPergunta.tipoAplicacaoPergunta.id}"
+							required="true" label="Tipo de Ata">
+							<f:selectItem itemLabel="Selecione ..." itemValue="" />
+							<f:selectItems value="#{tipoAplicacaoPerguntaBean.all}"
+								var="tipoAplicacaoPergunta"
+								itemLabel="#{tipoAplicacaoPergunta.dscTipoAplicacao}"
+								itemValue="#{tipoAplicacaoPergunta.id}" />
+						</p:selectOneMenu>
+
+						<h:outputText
+							value="#{messages['modeloPergunta.tipoFormatoResposta.descricao']}" />
+						<p:selectOneMenu
+							value="#{modeloPerguntaBean.modeloPergunta.tipoFormatoResposta.id}"
+							required="true" label="Tipo de Resposta">
+							<f:selectItem itemLabel="Selecione ..." itemValue="" />
+							<f:selectItems value="#{tipoFormatoRespostaBean.all}"
+								var="tipoFormatoResposta"
+								itemLabel="#{tipoFormatoResposta.dscTipoResposta}"
+								itemValue="#{tipoFormatoResposta.id}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="#{messages['modeloPergunta.descricao']}" />
+						<p:inputTextarea
+							value="#{modeloPerguntaBean.modeloPergunta.descricao}"
+							required="true" label="Descrição" cols="100"/>
+
+					</h:panelGrid>
+					
+					<div align="center">
+						<p:commandButton
+								action="#{modeloPerguntaBean.cadastarModeloPergunta}"
+								value="Cadastrar" icon="ui-icon-check"/>
+					</div>
+					
+				</p:panel>
+			</h:form>
+
+		</f:view>
+
+	</ui:define>
+
+</ui:composition>
